@@ -1,2 +1,2 @@
 # DevFabric
-open source tools for developers
+open source tools for developer
