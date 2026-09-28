@@ -1,9 +1,17 @@
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <map>
+
+bool LoadSuccess()
+{
+    // loading
+    
+}
 
 int main(int argc, char*argv[])
 {
-    std::vector <std::string> sargv = {};
-    for (int i = 0; i<argc;i++){sargv.push_back(argv[i]);}
+    // version
+    if (argv[1] == "--version"){}
     return 0;
 }
