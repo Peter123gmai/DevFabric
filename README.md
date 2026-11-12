@@ -5,7 +5,7 @@ Open-source CLI tools for developers.
 ## Installation
 
 ```bash
-git clone https://github.com/<your-username>/DevFabric.git
+git clone https://github.com/Peter123gmail/DevFabric.git
 cd DevFabric
 ./script/install.sh
 source ~/.bashrc
