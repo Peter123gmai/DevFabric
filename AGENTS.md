@@ -12,10 +12,10 @@ DevFabric is a small open-source CLI tool suite for developers, written in moder
 
 ```
 DevFabric/
-├── cli/cli.cpp          # Main CLI application (OOP, Command pattern)
+├── cli/cli.cpp          # Main CLI application (OOP, Command pattern, colorized errors)
 ├── libs/color.hpp       # ANSI color/style constants (inline constexpr)
 ├── config/cli.cfg       # Debug logging configuration (ini format)
-├── debug/dbg-tools.cpp  # Debug tools placeholder (empty)
+├── debug/dbg-tools.cpp  # Debug tools placeholder
 ├── bin/cli              # Compiled binary (gitignored)
 ├── script/install.sh    # Compiles cli.cpp and adds bin/ to ~/.bashrc PATH
 ├── script/commit.sh     # Git add/commit/push helper with logging
@@ -28,7 +28,7 @@ DevFabric/
 
 ```bash
 # From project root
-g++ cli/cli.cpp -o bin/cli
+g++ cli/cli.cpp -o bin/cli -std=c++17
 # or use the install script (also adds bin/ to PATH in ~/.bashrc)
 ./script/install.sh
 source ~/.bashrc
@@ -53,10 +53,10 @@ Supported `-run` extensions: `.cpp` (g++), `.py` (python), `.rs` (rustc), `.sh` 
 
 The CLI uses a **Command pattern** for easy scaling:
 
-- **`Command`** (abstract base class, `cli/cli.cpp:16`) — interface with `name()` and `execute(args)`. Add new commands by subclassing this.
+- **`Command`** (abstract base class) — interface with `name()` and `execute(args)`. Add new commands by subclassing this.
 - **`HelpCommand`** — prints usage text.
 - **`VersionCommand`** — prints version string.
-- **`RunCommand`** — executes files via `FileExecutor`.
+- **`RunCommand`** — executes one or more files via `FileExecutor`.
 - **`FileExecutor`** — detects extension via `std::filesystem::path::extension()` and runs with `std::system`.
 - **`CliApplication`** — owns all commands via `std::unique_ptr<Command>`, stores them in `std::unordered_map<std::string, std::unique_ptr<Command>>` keyed by alias, dispatches in `run()`.
 - **`main`** — constructs `CliApplication` and calls `app.run(argc, argv)`.
@@ -64,9 +64,10 @@ The CLI uses a **Command pattern** for easy scaling:
 Key conventions:
 - Anonymous namespace for file-local constants (`kAppName`, `kVersion`).
 - `fs = std::filesystem` alias at top.
+- `#include "../libs/color.hpp"` for ANSI color support.
 - `std::unique_ptr` for ownership; no raw owning pointers.
 - `return` exit codes from `main` instead of `exit()`.
-- `std::cerr` for errors, `std::cout` for normal output.
+- `std::cerr` for errors (colorized with `Color::Red` / `Color::Reset`), `std::cout` for normal output.
 - Exit code `0` = success, `1` = failure.
 - Comments explain non-obvious logic; every class/function has a note.
 
@@ -97,9 +98,9 @@ Required on the system:
 
 ## Adding a New Command
 
-1. Create a class inheriting from `Command` (`cli/cli.cpp:16`).
+1. Create a class inheriting from `Command` (`cli/cli.cpp`).
 2. Implement `name()` and `execute(const std::vector<std::string>&)`.
-3. In `CliApplication::CliApplication()` (`cli/cli.cpp:139`), register it:
+3. In `CliApplication::CliApplication()`, register it:
    ```cpp
    register_command(std::make_unique<YourCommand>(), {"-alias1", "--alias2"});
    ```
@@ -113,7 +114,7 @@ Required on the system:
 
 No formal test suite exists. Verify manually:
 ```bash
-g++ cli/cli.cpp -o bin/cli
+g++ cli/cli.cpp -o bin/cli -std=c++17
 ./bin/cli -v
 ./bin/cli -help
 ./bin/cli -run <some-file>
