@@ -56,6 +56,10 @@ show_error = true
 - python
 - gcc, gcc-g++
 
+## Supported OS
+
+- **Linux Fedora 45 Workstation** (official)
+
 ## Scripts
 
 - `script/install.sh` — compile the CLI and add it to `PATH`
