@@ -1,17 +1,25 @@
 #include <iostream>
 #include <vector>
-#include <fstream>
-#include <map>
+#include <string>
+//#include <map>
 
-bool LoadSuccess()
+struct systeminfo 
 {
-    // loading
-    return false;
-}
+    const std::string ver = "1.20";
+};
 
 int main(int argc, char*argv[])
 {
-    // version
-    if (argv[1] == "--version"){}
+    std::vector<std::string> argvs = {};
+    systeminfo syif;
+    
+    for (int i = 0; i<argc; i++){argvs.push_back(argv[i]);}
+    if (argvs.size() < 2)
+    {
+        std::cout << "Error: Missing argument" << std::endl;
+        exit(1);
+    }
+
+    if (argvs[1] == "-v" || argvs[1] == "--v" || argvs[1] == "--version" || argvs[1] == "-version"){std::cout << syif.ver << std::endl;}
     return 0;
 }
